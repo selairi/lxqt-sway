@@ -16,6 +16,10 @@ set(SHARE_FILES
     yatbfw.json
 )
 
+set(DESKTOP_FILES
+    lxqt_sway.desktop
+)
+
 install(PROGRAMS
     "${CMAKE_CURRENT_BINARY_DIR}/startlxqtsway"
     DESTINATION bin
@@ -29,3 +33,4 @@ install(PROGRAMS
 )
 
 install(FILES ${SHARE_FILES} DESTINATION share/lxqt-sway)
+install(FILES ${DESKTOP_FILES} DESTINATION /usr/share/wayland-sessions)
