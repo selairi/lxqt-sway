@@ -18,3 +18,4 @@ make
 sudo make install
 ```
 
+Restart your Display Manager and a new Desktop will be available.
