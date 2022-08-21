@@ -32,10 +32,10 @@
 #include <QStandardPaths>
 #include <QDir>
 
-QString profileDir(QString tool, QString profile, bool useFallback) {
+QString profileDir(QString workspace, QString settings, bool useFallback) {
     // try user-specific config file first
     QString dirName = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)
-                      + QStringLiteral("/") + tool + QStringLiteral("/") + profile;
+                      + QStringLiteral("/") + workspace + QStringLiteral("/") + settings;
     QDir dir(dirName);
 
     // if user config dir does not exist, try system-wide config dirs instead
@@ -43,7 +43,7 @@ QString profileDir(QString tool, QString profile, bool useFallback) {
         QString fallbackDir;
         const QStringList confList = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation);
         for(const auto &thisConf : confList) {
-            fallbackDir = thisConf + QStringLiteral("/") + tool + QStringLiteral("/") + profile;
+            fallbackDir = thisConf + QStringLiteral("/") + workspace + QStringLiteral("/") + settings;
             if(fallbackDir != dirName) {
                 dir.setPath(fallbackDir);
                 if(dir.exists()) {
@@ -58,78 +58,102 @@ QString profileDir(QString tool, QString profile, bool useFallback) {
 }
 
 
-void getSettingsPathAndKey(QString propertyName, QString *fileName, QString *key)
+QString getSettingsPath(QString workspace, QString settings)
 {
-    QStringList path = propertyName.split('/');
-    QString tool, profile;
-    for(int n = 0; n < path.size(); n++) {
-        if(n == 0) {
-            tool = path.at(n);
-        } else if(n == 1) {
-            profile = path.at(n);
-        } else if(n == 2) {
-            *fileName = profileDir(tool, profile, true) + "/" + path.at(n) + ".conf";
-        } else if(n > 2) {
-            if(key->isEmpty())
-                *key = path.at(n);
-            else
-                *key += "/" + path.at(n);
-        }
-    }
+    QString fileName = profileDir(workspace, settings, true) + ".conf";
+    return fileName;
 }
 
-QString getProperty(QString propertyName)
+QString getProperty(QString workspace, QString settings, QString propertyName)
 {
-    QString fileName, key;
-    getSettingsPathAndKey(propertyName, &fileName, &key);
-    QSettings settings(fileName, QSettings::IniFormat);
+    QString fileName = getSettingsPath(workspace, settings);
+    QSettings qsettings(fileName, QSettings::IniFormat);
 
-    return settings.value(key, QString()).toString();
+    return qsettings.value(propertyName, QString()).toString();
 }
 
-QStringList getKeys(QString settingsPath)
+QStringList getKeys(QString workspace, QString settings)
 {
-    QString fileName, key;
-    getSettingsPathAndKey(settingsPath, &fileName, &key);
-    QSettings settings(fileName, QSettings::IniFormat);
+    QString fileName = getSettingsPath(workspace, settings);
+    std::cout << "FileName: " << fileName.toStdString() << std::endl;
+    QSettings qsettings(fileName, QSettings::IniFormat);
 
-    return settings.allKeys();
+    return qsettings.allKeys();
 }
 
 int main(int argn, char *argv[])
 {
     QCoreApplication app(argn, argv);
-    QCoreApplication::setApplicationName("lxqt-session-sway");
+    QCoreApplication::setApplicationName("lxqt-settings");
     QCoreApplication::setApplicationVersion("0.1");
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("LXQt session for Sway.");
+    parser.setApplicationDescription(R"(List LXQt settings from command line.
+
+This tool lets read the LXQt settings from command line.
+
+These settings usually are in ~/.config/lxqt or ~/.config/pcmanfm-qt.
+
+Examples:
+
+Get cursor size:
+    lxqt-settings session --get Mouse/cursor_size
+
+Get cursor theme:
+    lxqt-settings session --get Mouse/cursor_theme
+
+Get wallpaper:
+    lxqt-settings pcmanfm-qt lxqt/settings --get Desktop/Wallpaper
+
+Get list of pcmanfm-qt settings:
+    lxqt-settings pcmanfm-qt lxqt/settings --list
+
+)");
     parser.addHelpOption();
     parser.addVersionOption();
 
-    	QCommandLineOption getPropertyOption(QStringList() << "get",
-        QCoreApplication::translate("main", "Get a LXQt <setting>."),
-        QCoreApplication::translate("main", "setting"));
+    parser.addPositionalArgument("workspace", QCoreApplication::translate("main", "Workspace to list, ex. lxqt or pcmanfm-qt. Default lxqt."), "[workspace]");
+    parser.addPositionalArgument("settings", QCoreApplication::translate("main", "Settings file to read."));
+
+    QCommandLineOption getPropertyOption(QStringList() << "get",
+        QCoreApplication::translate("main", "Get a LXQt <key>."),
+        QCoreApplication::translate("main", "key"));
     parser.addOption(getPropertyOption);
 
     QCommandLineOption listPropertiesOption(QStringList() << "list",
-        QCoreApplication::translate("main", "List of keys <setting>."),
-        QCoreApplication::translate("main", "setting"));
+        QCoreApplication::translate("main", "List of keys")
+    );
     parser.addOption(listPropertiesOption);
 
 
     // Process the actual command line arguments given by the user
     parser.process(app);
 
-    QString propertyName = parser.value(getPropertyOption);
-    if(! propertyName.isEmpty()) {
-        std::cout << getProperty(propertyName).toStdString() << std::endl;
+    QString workspace, settings;
+    const QStringList positionalArgs = parser.positionalArguments();
+    if(positionalArgs.size() > 1) {
+        workspace = positionalArgs.at(0);
+        settings = positionalArgs.at(1);
+    } else if(positionalArgs.size() == 1) {
+        workspace = "lxqt";
+        settings = positionalArgs.at(0);
+    } else {
+        parser.showHelp();
+        return 1;
     }
 
-    QString fileName = parser.value(listPropertiesOption);
-    if(! fileName.isEmpty()) {
-        QStringList keys = getKeys(fileName);
+    QString propertyName = parser.value(getPropertyOption);
+    if(! propertyName.isEmpty()) {
+        std::cout << getProperty(workspace, settings, propertyName).toStdString() << std::endl;
+        return 0;
+    }
+
+    if(parser.isSet(listPropertiesOption)) {
+        QStringList keys = getKeys(workspace, settings);
         for(QString key : keys)
             std::cout << key.toStdString() << std::endl;
+        return 0;
     }
+
+    parser.showHelp();
 }

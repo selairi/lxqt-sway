@@ -2,13 +2,13 @@
 keyboard_layout=`localectl status | grep -e "X11 Layout:" | sed 's/X11 Layout://' | sed 's/ //g'`
 
 # Background
-background=`lxqt-settings --get pcmanfm-qt/lxqt/Desktop/Wallpaper`
+background=`lxqt-settings pcmanfm-qt lxqt/settings --get Desktop/Wallpaper`
 if [ -z "$background"]; then
     background=/usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png
 fi
 
-CURSOR_SIZE=`lxqt-settings --get 'lxqt/./session/Mouse/cursor_size'`
-CURSOR_THEME=`lxqt-settings --get 'lxqt/./session/Mouse/cursor_theme'`
+CURSOR_SIZE=`lxqt-settings session --get Mouse/cursor_size`
+CURSOR_THEME=`lxqt-settings session --get Mouse/cursor_theme`
 
 cat <<EOF
 #
@@ -27,7 +27,7 @@ set \$down j
 set \$up k
 set \$right l
 # Your preferred terminal emulator
-set \$term foot
+set \$term qterminal
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
@@ -261,13 +261,13 @@ bindsym XF86AudioPrev exec playerctl previous
 bindsym XF86Search exec bemenu-run
 
 # Screenshot
-bindsym Print exec grim - | tee ~/"\$(xdg-user-dir DOWNLOAD)/\$(date +'%Y-%m-%d %H;%M;%S.png')" | wl-copy
+bindsym Print exec grim - | tee "\$(xdg-user-dir DOWNLOAD)/\$(date +'%Y-%m-%d %H;%M;%S.png')" | wl-copy
 # Capture the specified screen area to clipboard
-bindsym Shift+Print exec grim -g "\$(slurp)" - | tee ~/"\$(xdg-user-dir DOWNLOAD)/\$(date +'%Y-%m-%d %H;%M;%S.png')" | wl-copy
+bindsym Shift+Print exec grim -g "\$(slurp)" - | tee "\$(xdg-user-dir DOWNLOAD)/\$(date +'%Y-%m-%d %H;%M;%S.png')" | wl-copy
 
 bindsym \$mod+i exec firefox
 exec_always /usr/bin/gammastep
-exec /usr/local/bin/yatbfw
+exec yatbfw --settings "$XDG_CONFIG_HOME/lxqt/lxqt-sway/yatbfw.json"
 exec lxqt-policykit-agent
 
 ## LXQt-notificationd config

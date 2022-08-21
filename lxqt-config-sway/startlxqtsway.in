@@ -68,16 +68,18 @@ export XDG_CURRENT_DESKTOP="LXQt"
 ## End LXQt common settings
 
 # Set cursor theme and size
-export XCURSOR_SIZE=`lxqt-settings --get 'lxqt/./session/Mouse/cursor_size'`
-export XCURSOR_THEME=`lxqt-settings --get 'lxqt/./session/Mouse/cursor_theme'`
+export XCURSOR_SIZE=`lxqt-settings session --get Mouse/cursor_size`
+export XCURSOR_THEME=`lxqt-settings session --get Mouse/cursor_theme`
 
 # Check sway config file
 if ! [ -e "$XDG_CONFIG_HOME/lxqt/lxqt-sway/config" ]; then
     mkdir -p "$XDG_CONFIG_HOME/lxqt/lxqt-sway"
     lxqt-sway-get-config.sh > "$XDG_CONFIG_HOME/lxqt/lxqt-sway/config"
+    cp "@CMAKE_INSTALL_PREFIX@/share/lxqt-sway/yatbfw.json" "$XDG_CONFIG_HOME/lxqt/lxqt-sway/"
+else
+    # Update sway config
+    lxqt-sway-get-config.sh > "$XDG_CONFIG_HOME/lxqt/lxqt-sway/config"
 fi
-# Update sway config
-#lxqt-sway-get-config.sh > "$XDG_CONFIG_HOME/lxqt/lxqt-sway/config"
 
 # Start the LXQt session
 exec sway --config "$XDG_CONFIG_HOME/lxqt/lxqt-sway/config"
