@@ -87,7 +87,7 @@ output * scale 1
     # Start a terminal
     bindsym \$mod+Return exec xfce4-terminal
     bindsym \$mod+t exec qterminal
-    bindsym \$mod+p exec pcmanfm-qt
+    bindsym \$mod+p exec pcmanfm-qt --profile=lxqt
 
 
     # Kill focused window

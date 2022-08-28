@@ -60,7 +60,7 @@
     {
       "type" : "launcher",
       "icon" : "lxqt",
-      "exec" : "pcmanfm-qt 'menu://applications/'"
+      "exec" : "pcmanfm-qt --profile=lxqt 'menu://applications/'"
     },
     {
       "type" : "launcher",
@@ -71,7 +71,7 @@
       "type" : "launcher",
       "icon" : "user-desktop-symbolic",
       "tooltip" : "Show desktop",
-      "exec" : "pcmanfm-qt --desktop-off;pcmanfm-qt --desktop"
+      "exec" : "pcmanfm-qt --desktop-off --profile=lxqt;pcmanfm-qt --desktop --profile=lxqt"
     },
     {
       "type" : "launcher",
