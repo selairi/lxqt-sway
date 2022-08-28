@@ -20,6 +20,14 @@ sudo make install
 
 Restart your Display Manager and a new Desktop will be available.
 
+Other tools could be installed for a better experience:
+- [gammastep](https://gitlab.com/chinstrap/gammastep)
+- wl-copy, grim and slurp for screenshots
+
+## lxqt-sway settings
+
+Settings will be saved at "~/.config/lxqt/lxqt-sway" folder.
+
 ## lxqt-settings
 
 A tool called lxqt-settings has be written. lxqt-settings is a command line tool that can read LXQt settings.
