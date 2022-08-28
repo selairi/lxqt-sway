@@ -3,7 +3,7 @@ keyboard_layout=`localectl status | grep -e "X11 Layout:" | sed 's/X11 Layout://
 
 # Background
 background=`lxqt-settings pcmanfm-qt lxqt/settings --get Desktop/Wallpaper`
-if [ -z "$background"]; then
+if [ -z "$background" ]; then
     background=/usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png
 fi
 
