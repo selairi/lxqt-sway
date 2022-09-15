@@ -44,9 +44,6 @@ else
 fi
 mkdir -p "$XDG_DESKTOP_DIR"
 
-# Clean up after GDM (GDM sets the number of desktops to one)
-xprop -root -remove _NET_NUMBER_OF_DESKTOPS -remove _NET_DESKTOP_NAMES -remove _NET_CURRENT_DESKTOP 2> /dev/null
-
 # Launch DBus if needed
 if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
     if [ -z "$XDG_RUNTIME_DIR" ] || ! [ -S "$XDG_RUNTIME_DIR/bus" ] || ! [ -O "$XDG_RUNTIME_DIR/bus" ]; then
@@ -64,6 +61,11 @@ export QT_QPA_PLATFORMTHEME=lxqt
 export XDG_MENU_PREFIX="lxqt-"
 
 export XDG_CURRENT_DESKTOP="LXQt"
+
+# Export language setting and scale factor
+export $(cat "$XDG_CONFIG_HOME"/lxqt/lxqt-config-locale.conf |grep LANG)
+export $(cat "$XDG_CONFIG_HOME"/lxqt/session.conf |grep QT_SCALE_FACTOR)
+
 
 ## End LXQt common settings
 
