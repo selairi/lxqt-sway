@@ -119,7 +119,7 @@
     {
       "type" : "launcher",
       "icon" : "audio-volume-muted",
-      "exec" : "pactl set-sink-volume @DEFAULT_SINK@ 0%"
+      "exec" : "pactl set-sink-mute @DEFAULT_SINK@ toggle"
     },
     {
       "type" : "launcher",
