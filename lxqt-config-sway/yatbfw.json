@@ -83,7 +83,7 @@
       "type" : "launcher",
       "icon" : "accessories-screenshot-symbolic",
       "tooltip" : "Screenshot",
-      "exec" : "photo=\"$(xdg-user-dir DOWNLOAD)/$(date +'%Y-%m-%d %H;%M;%S.png')\" ; grim -g \"$(slurp)\" - | tee \"$photo\" | wl-copy ; lximage-qt \"$photo\""
+      "exec" : "sleep 5 ; photo=\"$(xdg-user-dir DOWNLOAD)/$(date +'%Y-%m-%d %H;%M;%S.png')\" ; grim -g \"$(slurp)\" - | tee \"$photo\" | wl-copy ; lximage-qt \"$photo\""
     }
   ],
   "end_items" : [
@@ -96,7 +96,8 @@
     {
       "type" : "clock",
       "time_format" : "%H:%M",
-      "exec" : "qterminal -e bash -c 'cal;read'"
+      "exec" : "kdialog --calendar \"$(date)\""
+      //"exec" : "qterminal -e bash -c 'cal;read'"
       //"exec" : "zenity --calendar --text= --title=`date +%Y-%m-%d`"
     },
     {
