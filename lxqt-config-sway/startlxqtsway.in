@@ -83,5 +83,9 @@ else
     lxqt-sway-get-config.sh > "$XDG_CONFIG_HOME/lxqt/lxqt-sway/config"
 fi
 
+# Set Wayland environment variables
+export QT_QPA_PLATFORM=wayland-egl
+export MOZ_ENABLE_WAYLAND=1
+
 # Start the LXQt session
 exec sway --config "$XDG_CONFIG_HOME/lxqt/lxqt-sway/config"
