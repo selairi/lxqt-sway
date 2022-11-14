@@ -84,7 +84,7 @@ else
 fi
 
 # Set Wayland environment variables
-export QT_QPA_PLATFORM=wayland-egl
+# Enable Wayland for Firefox 
 export MOZ_ENABLE_WAYLAND=1
 
 # Start the LXQt session
