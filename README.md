@@ -23,7 +23,8 @@ Restart your Display Manager and a new Desktop will be available.
 Other tools could be installed for a better experience:
 - [gammastep](https://gitlab.com/chinstrap/gammastep)
 - wl-copy, grim and slurp for screenshots
-- Papirus-Dark icon theme.
+- brightnessctl for control brightness
+- Papirus-Dark icon theme
 
 ## lxqt-sway settings
 
